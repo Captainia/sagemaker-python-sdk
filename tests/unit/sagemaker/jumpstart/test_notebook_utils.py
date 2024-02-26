@@ -665,12 +665,10 @@ class ListJumpStartModels(TestCase):
         with pytest.raises(NotImplementedError):
             list_jumpstart_models("hosting_ecr_specs.py_version == py3")
 
+
 @patch("sagemaker.jumpstart.utils.validate_model_id_and_get_type")
 @patch("sagemaker.jumpstart.accessors.JumpStartModelsAccessor.get_model_specs")
-def test_get_model_url(
-    patched_get_model_specs: Mock,
-    patched_validate_model_id_and_get_type: Mock
-):
+def test_get_model_url(patched_get_model_specs: Mock, patched_validate_model_id_and_get_type: Mock):
 
     patched_get_model_specs.side_effect = get_prototype_model_spec
     patched_validate_model_id_and_get_type.return_value = JumpStartModelType.OPENSOURCE

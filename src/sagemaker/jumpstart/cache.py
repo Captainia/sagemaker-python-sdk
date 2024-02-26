@@ -160,10 +160,10 @@ class JumpStartModelsCache:
             JumpStartS3FileType.MANIFEST: self._manifest_file_s3_key,
             JumpStartS3FileType.PROPRIETARY_MANIFEST: self._proprietary_manifest_s3_key,
         }
-
-        if not (property_name := file_mapping.get(file_type)):
+        property_name = file_mapping.get(file_type)
+        if not property_name:
             raise ValueError(
-                f"Bad value when setting manifest '{file_type}':" \
+                f"Bad value when setting manifest '{file_type}':"
                 f"must be in {[JumpStartS3FileType.MANIFEST, JumpStartS3FileType.PROPRIETARY_MANIFEST]}"
             )
         if key != property_name:
@@ -179,7 +179,7 @@ class JumpStartModelsCache:
         if file_type == JumpStartS3FileType.PROPRIETARY_MANIFEST:
             return self._proprietary_manifest_s3_key
         raise ValueError(
-            f"Bad value when getting manifest '{file_type}':" \
+            f"Bad value when getting manifest '{file_type}':"
             f"must be in {[JumpStartS3FileType.MANIFEST, JumpStartS3FileType.PROPRIETARY_MANIFEST]}"
         )
 
@@ -193,7 +193,8 @@ class JumpStartModelsCache:
         """Return bucket used for cache."""
         return self.s3_bucket_name
 
-    def _model_id_retrieval_function(self,
+    def _model_id_retrieval_function(
+        self,
         key: JumpStartVersionedModelId,
         value: Optional[JumpStartVersionedModelId],  # pylint: disable=W0613
         model_type: JumpStartModelType
@@ -399,7 +400,8 @@ class JumpStartModelsCache:
             return JumpStartCachedS3ContentValue(formatted_content=model_specs)
         raise ValueError(
             f"Bad value for key '{key}': must be in"
-            f"{[JumpStartS3FileType.MANIFEST, JumpStartS3FileType.SPECS, JumpStartS3FileType.PROPRIETARY_SPECS, JumpStartS3FileType.PROPRIETARY_MANIFEST]}"
+            f"{JumpStartS3FileType.MANIFEST, JumpStartS3FileType.SPECS}"
+            f"{JumpStartS3FileType.PROPRIETARY_SPECS, JumpStartS3FileType.PROPRIETARY_MANIFEST}"
         )
 
     def get_manifest(

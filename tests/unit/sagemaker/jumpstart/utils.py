@@ -61,7 +61,6 @@ def get_header_from_base_header(
 
         return JumpStartModelHeader(spec)
 
-
     if all(
         [
             "pytorch" not in model_id,
@@ -121,7 +120,7 @@ def get_special_model_spec(
     model_id: str = None,
     version: str = None,
     s3_client: boto3.client = None,
-    model_type: JumpStartModelType = JumpStartModelType.OPENSOURCE
+    model_type: JumpStartModelType = JumpStartModelType.OPENSOURCE,
 ) -> JumpStartModelSpecs:
     """This function mocks cache accessor functions. For this mock,
     we only retrieve model specs based on the model ID. This is reserved
@@ -137,7 +136,7 @@ def get_special_model_spec_for_inference_component_based_endpoint(
     model_id: str = None,
     version: str = None,
     s3_client: boto3.client = None,
-    model_type: JumpStartModelType = JumpStartModelType.OPENSOURCE
+    model_type: JumpStartModelType = JumpStartModelType.OPENSOURCE,
 ) -> JumpStartModelSpecs:
     """This function mocks cache accessor functions. For this mock,
     we only retrieve model specs based on the model ID and adding

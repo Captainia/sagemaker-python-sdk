@@ -787,7 +787,9 @@ class JumpStartModelSpecs(JumpStartDataHolderType):
         self.url: str = json_obj.get("url", "")
         self.version: str = json_obj["version"]
         self.min_sdk_version: str = json_obj["min_sdk_version"]
-        self.incremental_training_supported: bool = bool(json_obj.get("incremental_training_supported", False))
+        self.incremental_training_supported: bool = bool(
+            json_obj.get("incremental_training_supported", False)
+        )
         self.hosting_ecr_specs: Optional[JumpStartECRSpecs] = (
             JumpStartECRSpecs(json_obj["hosting_ecr_specs"])
             if "hosting_ecr_specs" in json_obj

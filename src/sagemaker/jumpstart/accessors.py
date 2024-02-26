@@ -217,13 +217,11 @@ class JumpStartModelsAccessor(object):
         if s3_client is not None:
             additional_kwargs.update({"s3_client": s3_client})
 
-        cache_kwargs = (
-            JumpStartModelsAccessor._validate_and_mutate_region_cache_kwargs(
-                {**JumpStartModelsAccessor._cache_kwargs, **additional_kwargs},
-                region,
-            )
+        cache_kwargs = JumpStartModelsAccessor._validate_and_mutate_region_cache_kwargs(
+            {**JumpStartModelsAccessor._cache_kwargs, **additional_kwargs},
+            region,
         )
-        JumpStartModelsAccessor._set_cache_and_region(region, cache_kwargs)        
+        JumpStartModelsAccessor._set_cache_and_region(region, cache_kwargs)
         return JumpStartModelsAccessor._cache.get_manifest(model_type)  # type: ignore
 
     @staticmethod

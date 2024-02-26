@@ -34,7 +34,6 @@ from sagemaker.jumpstart.exceptions import (
     DeprecatedJumpStartModelError,
     VulnerableJumpStartModelError,
     get_old_model_version_msg,
-    INVALID_MODEL_ID_ERROR_MSG
 )
 from sagemaker.jumpstart.types import (
     JumpStartModelHeader,
@@ -583,7 +582,7 @@ def verify_model_region_and_return_specs(
         model_id=model_id,
         version=version,
         s3_client=sagemaker_session.s3_client,
-        model_type=model_type
+        model_type=model_type,
     )
 
     if (
@@ -750,6 +749,7 @@ def validate_model_id_and_get_type(
     Raises:
         ValueError: If the script is not supported by JumpStart.
     """
+
     def _get_model_type(
         model_id: str,
         open_source_models: Set[str],
@@ -776,22 +776,14 @@ def validate_model_id_and_get_type(
     models_manifest_list = accessors.JumpStartModelsAccessor._get_manifest(
         region=region, s3_client=s3_client, model_type=enums.JumpStartModelType.OPENSOURCE
     )
-    open_source_model_id_set = {
-        model.model_id for model in models_manifest_list
-    }
+    open_source_model_id_set = {model.model_id for model in models_manifest_list}
 
-    proprietary_manifest_list = (
-        accessors.JumpStartModelsAccessor._get_manifest(
-            region=region, s3_client=s3_client, model_type=enums.JumpStartModelType.PROPRIETARY
-        )
+    proprietary_manifest_list = accessors.JumpStartModelsAccessor._get_manifest(
+        region=region, s3_client=s3_client, model_type=enums.JumpStartModelType.PROPRIETARY
     )
 
-    proprietary_model_id_set = {
-        model.model_id for model in proprietary_manifest_list
-    }
-    return _get_model_type(
-        model_id, open_source_model_id_set, proprietary_model_id_set, script
-    )
+    proprietary_model_id_set = {model.model_id for model in proprietary_manifest_list}
+    return _get_model_type(model_id, open_source_model_id_set, proprietary_model_id_set, script)
 
 
 def get_jumpstart_model_id_version_from_resource_arn(

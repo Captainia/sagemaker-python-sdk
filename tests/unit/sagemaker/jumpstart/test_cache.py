@@ -170,7 +170,7 @@ def test_jumpstart_cache_get_header():
     ) == cache.get_header(
         model_id="ai21-summarization",
         semantic_version_str="1.1.003",
-        model_type=JumpStartModelType.PROPRIETARY
+        model_type=JumpStartModelType.PROPRIETARY,
     )
 
     assert JumpStartModelHeader(
@@ -184,7 +184,7 @@ def test_jumpstart_cache_get_header():
     ) == cache.get_header(
         model_id="ai21-summarization",
         semantic_version_str="*",
-        model_type=JumpStartModelType.PROPRIETARY
+        model_type=JumpStartModelType.PROPRIETARY,
     )
 
     with pytest.raises(KeyError) as e:
@@ -241,7 +241,7 @@ def test_jumpstart_cache_get_header():
         "for updated list of models. "
         "Did you mean to use model ID 'ai21-summarization'?"
     ) in str(e.value)
-    
+
     with pytest.raises(KeyError) as e:
         cache.get_header(
             model_id="ai21-summarize",
@@ -284,21 +284,21 @@ def test_jumpstart_cache_get_header():
             model_id="tensorflow-ic-imagenet-inception-v3-classification-4-bak",
             semantic_version_str="*",
         )
-        
+
     with pytest.raises(KeyError):
         cache.get_header(
             model_id="tensorflow-ic-imagenet-inception-v3-classification-4",
             semantic_version_str="*",
             model_type=JumpStartModelType.PROPRIETARY,
         )
-    
+
     with pytest.raises(KeyError):
         cache.get_header(
             model_id="tensorflow-ic-imagenet-inception-v3-classification-4",
             semantic_version_str="1.1.004",
             model_type=JumpStartModelType.PROPRIETARY,
         )
-    
+
     with pytest.raises(KeyError):
         cache.get_header(
             model_id="ai21-summarization",
@@ -770,6 +770,7 @@ def test_jumpstart_cache_proprietary_manifest_makes_correct_s3_calls(
     )
     mock_boto3_client.return_value.head_object.assert_not_called()
 
+
 @patch.object(JumpStartModelsCache, "_retrieval_function", patched_retrieval_function)
 def test_jumpstart_cache_handles_bad_semantic_version_manifest_key_cache():
     cache = JumpStartModelsCache(s3_bucket_name="some_bucket")
@@ -835,11 +836,14 @@ def test_jumpstart_get_full_manifest():
 
     assert raw_manifest == BASE_MANIFEST
 
+
 @patch.object(JumpStartModelsCache, "_retrieval_function", patched_retrieval_function)
 @patch("sagemaker.jumpstart.utils.get_sagemaker_version", lambda: "2.68.3")
 def test_jumpstart_get_full_proprietary_manifest():
     cache = JumpStartModelsCache(s3_bucket_name="some_bucket")
-    raw_manifest = [header.to_json() for header in cache.get_manifest(model_type=JumpStartModelType.PROPRIETARY)]
+    raw_manifest = [
+        header.to_json() for header in cache.get_manifest(model_type=JumpStartModelType.PROPRIETARY)
+    ]
 
     assert raw_manifest == BASE_PROPRIETARY_MANIFEST
 
@@ -920,7 +924,7 @@ def test_jumpstart_cache_get_specs():
             model_id=model_id,
             version_str="5.*",
         )
-    
+
     model_id, version = "ai21-summarization", "2.0.0"
     with pytest.raises(KeyError):
         cache.get_specs(
@@ -1002,9 +1006,7 @@ def test_jumpstart_local_metadata_override_specs(
     cache = JumpStartModelsCache(s3_bucket_name="some_bucket")
 
     model_id, version = "tensorflow-ic-imagenet-inception-v3-classification-4", "2.0.0"
-    assert JumpStartModelSpecs(BASE_SPEC) == cache.get_specs(
-        model_id=model_id, version_str=version
-    )
+    assert JumpStartModelSpecs(BASE_SPEC) == cache.get_specs(model_id=model_id, version_str=version)
 
     mocked_is_dir.assert_any_call("/some/directory/metadata/specs/root")
     mocked_is_dir.assert_any_call("/some/directory/metadata/manifest/root")

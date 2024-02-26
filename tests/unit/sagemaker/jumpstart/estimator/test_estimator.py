@@ -93,7 +93,7 @@ class EstimatorTest(unittest.TestCase):
         model_id, model_version = "js-trainable-model", "*"
 
         mock_get_model_specs.side_effect = get_special_model_spec
-        
+
         mock_get_model_type.return_value = JumpStartModelType.OPENSOURCE
 
         mock_session_estimator.return_value = sagemaker_session
@@ -594,14 +594,13 @@ class EstimatorTest(unittest.TestCase):
 
         mock_timestamp.return_value = "8675309"
 
-
         model_id, _ = "js-gated-artifact-trainable-model", "*"
 
         mock_get_model_specs.side_effect = get_special_model_spec
 
         mock_session_estimator.return_value = sagemaker_session
         mock_session_model.return_value = sagemaker_session
-        
+
         mock_validate_model_id_and_get_type.return_value = JumpStartModelType.OPENSOURCE
 
         with pytest.raises(ValueError) as e:
