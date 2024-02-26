@@ -163,8 +163,8 @@ class JumpStartModelsCache:
         property_name = file_mapping.get(file_type)
         if not property_name:
             raise ValueError(
-                f"Bad value when setting manifest '{file_type}':"
-                f"must be in {[JumpStartS3FileType.MANIFEST, JumpStartS3FileType.PROPRIETARY_MANIFEST]}"
+                f"Bad value when setting manifest '{file_type}': must be in"
+                f"{[JumpStartS3FileType.MANIFEST, JumpStartS3FileType.PROPRIETARY_MANIFEST]}"
             )
         if key != property_name:
             setattr(self, property_name, key)
@@ -294,6 +294,7 @@ class JumpStartModelsCache:
         key: JumpStartVersionedModelId,
         value: Optional[JumpStartVersionedModelId],  # pylint: disable=W0613
     ) -> JumpStartVersionedModelId:
+        """Get open source manifest key from model id."""
         return self._model_id_retrieval_function(
             key, value, model_type=JumpStartModelType.OPENSOURCE
         )
@@ -303,6 +304,7 @@ class JumpStartModelsCache:
         key: JumpStartVersionedModelId,
         value: Optional[JumpStartVersionedModelId],  # pylint: disable=W0613
     ) -> JumpStartVersionedModelId:
+        """Get proprietary manifest key from model id."""
         return self._model_id_retrieval_function(
             key, value, model_type=JumpStartModelType.PROPRIETARY
         )
@@ -429,7 +431,9 @@ class JumpStartModelsCache:
             semantic_version_str (str): The semantic version for which to get a
                 header.
         """
-        return self._get_header_impl(model_id, semantic_version_str=semantic_version_str, model_type=model_type)
+        return self._get_header_impl(
+            model_id, semantic_version_str=semantic_version_str, model_type=model_type
+        )
 
     def _select_version(
         self,

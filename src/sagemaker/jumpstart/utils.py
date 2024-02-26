@@ -27,7 +27,7 @@ from sagemaker.config.config_schema import (
     TRAINING_JOB_ROLE_ARN_PATH,
 )
 
-from sagemaker.jumpstart import constants, enums, utils
+from sagemaker.jumpstart import constants, enums
 from sagemaker.jumpstart import accessors
 from sagemaker.s3 import parse_s3_url
 from sagemaker.jumpstart.exceptions import (
@@ -573,7 +573,7 @@ def verify_model_region_and_return_specs(
             "JumpStart models only support scopes: "
             f"{', '.join(constants.SUPPORTED_JUMPSTART_SCOPES)}."
         )
-    model_type = utils.validate_model_id_and_get_type(
+    model_type = validate_model_id_and_get_type(
         model_id=model_id, region=region, model_version=version, script=scope
     )
 
@@ -758,11 +758,10 @@ def validate_model_id_and_get_type(
     ) -> enums.JumpStartModelType:
         if model_id in open_source_models:
             return enums.JumpStartModelType.OPENSOURCE
-        elif model_id in proprietary_models:
+        if model_id in proprietary_models:
             if script == enums.JumpStartScriptScope.INFERENCE:
                 return enums.JumpStartModelType.PROPRIETARY
-            else:
-                raise ValueError(f"Unsupported script for Marketplace models: {script}")
+            raise ValueError(f"Unsupported script for Marketplace models: {script}")
         return False
 
     if model_id in {None, ""}:
