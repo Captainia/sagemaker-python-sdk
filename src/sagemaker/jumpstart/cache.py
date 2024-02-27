@@ -122,7 +122,7 @@ class JumpStartModelsCache:
         self._manifest_file_s3_key = manifest_file_s3_key
         self._proprietary_manifest_s3_key = proprietary_manifest_s3_key
         self._manifest_file_s3_map = {
-            JumpStartModelType.OPENSOURCE: self._manifest_file_s3_key,
+            JumpStartModelType.OPEN_SOURCE: self._manifest_file_s3_key,
             JumpStartModelType.PROPRIETARY: self._proprietary_manifest_s3_key,
         }
         self.s3_bucket_name = (
@@ -149,7 +149,7 @@ class JumpStartModelsCache:
     def set_manifest_file_s3_key(
         self,
         key: str,
-        file_type: JumpStartS3FileType = JumpStartS3FileType.MANIFEST,
+        file_type: JumpStartS3FileType = JumpStartS3FileType.OPEN_SOURCE_MANIFEST,
     ) -> None:
         """Set manifest file s3 key. Clears cache after new key is set.
 
@@ -157,30 +157,30 @@ class JumpStartModelsCache:
             ValueError: if the file type is not recognized
         """
         file_mapping = {
-            JumpStartS3FileType.MANIFEST: self._manifest_file_s3_key,
+            JumpStartS3FileType.OPEN_SOURCE_MANIFEST: self._manifest_file_s3_key,
             JumpStartS3FileType.PROPRIETARY_MANIFEST: self._proprietary_manifest_s3_key,
         }
         property_name = file_mapping.get(file_type)
         if not property_name:
             raise ValueError(
                 f"Bad value when setting manifest '{file_type}': must be in"
-                f"{[JumpStartS3FileType.MANIFEST, JumpStartS3FileType.PROPRIETARY_MANIFEST]}"
+                f"{[JumpStartS3FileType.OPEN_SOURCE_MANIFEST, JumpStartS3FileType.PROPRIETARY_MANIFEST]}"
             )
         if key != property_name:
             setattr(self, property_name, key)
             self.clear()
 
     def get_manifest_file_s3_key(
-        self, file_type: JumpStartS3FileType = JumpStartS3FileType.MANIFEST
+        self, file_type: JumpStartS3FileType = JumpStartS3FileType.OPEN_SOURCE_MANIFEST
     ) -> str:
         """Return manifest file s3 key for cache."""
-        if file_type == JumpStartS3FileType.MANIFEST:
+        if file_type == JumpStartS3FileType.OPEN_SOURCE_MANIFEST:
             return self._manifest_file_s3_key
         if file_type == JumpStartS3FileType.PROPRIETARY_MANIFEST:
             return self._proprietary_manifest_s3_key
         raise ValueError(
             f"Bad value when getting manifest '{file_type}':"
-            f"must be in {[JumpStartS3FileType.MANIFEST, JumpStartS3FileType.PROPRIETARY_MANIFEST]}"
+            f"must be in {[JumpStartS3FileType.OPEN_SOURCE_MANIFEST, JumpStartS3FileType.PROPRIETARY_MANIFEST]}"
         )
 
     def set_s3_bucket_name(self, s3_bucket_name: str) -> None:
@@ -296,7 +296,7 @@ class JumpStartModelsCache:
     ) -> JumpStartVersionedModelId:
         """Get open source manifest key from model id."""
         return self._model_id_retrieval_function(
-            key, value, model_type=JumpStartModelType.OPENSOURCE
+            key, value, model_type=JumpStartModelType.OPEN_SOURCE
         )
 
     def _get_proprietary_manifest_key_from_model_id(
@@ -353,11 +353,11 @@ class JumpStartModelsCache:
         filetype: JumpStartS3FileType
     ) -> Union[dict, list]:
         """Reads json file from local filesystem and returns data."""
-        if filetype == JumpStartS3FileType.MANIFEST:
+        if filetype == JumpStartS3FileType.OPEN_SOURCE_MANIFEST:
             metadata_local_root = (
                 os.environ[ENV_VARIABLE_JUMPSTART_MANIFEST_LOCAL_ROOT_DIR_OVERRIDE]
             )
-        elif filetype == JumpStartS3FileType.SPECS:
+        elif filetype == JumpStartS3FileType.OPEN_SOURCE_SPECS:
             metadata_local_root = os.environ[ENV_VARIABLE_JUMPSTART_SPECS_LOCAL_ROOT_DIR_OVERRIDE]
         else:
             raise ValueError(f"Unsupported file type for local override: {filetype}")
@@ -385,7 +385,7 @@ class JumpStartModelsCache:
         """
 
         file_type, s3_key = key.file_type, key.s3_key
-        if file_type in {JumpStartS3FileType.MANIFEST, JumpStartS3FileType.PROPRIETARY_MANIFEST}:
+        if file_type in {JumpStartS3FileType.OPEN_SOURCE_MANIFEST, JumpStartS3FileType.PROPRIETARY_MANIFEST}:
             if value is not None and not self._is_local_metadata_mode():
                 etag = self._get_json_md5_hash(s3_key)
                 if etag == value.md5_hash:
@@ -395,20 +395,20 @@ class JumpStartModelsCache:
                 formatted_content=utils.get_formatted_manifest(formatted_body),
                 md5_hash=etag,
             )
-        if file_type in {JumpStartS3FileType.SPECS, JumpStartS3FileType.PROPRIETARY_SPECS}:
+        if file_type in {JumpStartS3FileType.OPEN_SOURCE_SPECS, JumpStartS3FileType.PROPRIETARY_SPECS}:
             formatted_body, _ = self._get_json_file(s3_key, file_type)
             model_specs = JumpStartModelSpecs(formatted_body)
             utils.emit_logs_based_on_model_specs(model_specs, self.get_region(), self._s3_client)
             return JumpStartCachedS3ContentValue(formatted_content=model_specs)
         raise ValueError(
             f"Bad value for key '{key}': must be in"
-            f"{JumpStartS3FileType.MANIFEST, JumpStartS3FileType.SPECS}"
+            f"{JumpStartS3FileType.OPEN_SOURCE_MANIFEST, JumpStartS3FileType.OPEN_SOURCE_SPECS}"
             f"{JumpStartS3FileType.PROPRIETARY_SPECS, JumpStartS3FileType.PROPRIETARY_MANIFEST}"
         )
 
     def get_manifest(
         self,
-        model_type: JumpStartModelType = JumpStartModelType.OPENSOURCE,
+        model_type: JumpStartModelType = JumpStartModelType.OPEN_SOURCE,
     ) -> List[JumpStartModelHeader]:
         """Return entire JumpStart models manifest."""
         manifest_dict = self._s3_cache.get(
@@ -422,7 +422,7 @@ class JumpStartModelsCache:
         self,
         model_id: str,
         semantic_version_str: str,
-        model_type: JumpStartModelType = JumpStartModelType.OPENSOURCE,
+        model_type: JumpStartModelType = JumpStartModelType.OPEN_SOURCE,
     ) -> JumpStartModelHeader:
         """Return header for a given JumpStart model ID and semantic version.
 
@@ -466,7 +466,7 @@ class JumpStartModelsCache:
         model_id: str,
         semantic_version_str: str,
         attempt: int = 0,
-        model_type: JumpStartModelType = JumpStartModelType.OPENSOURCE
+        model_type: JumpStartModelType = JumpStartModelType.OPEN_SOURCE
     ) -> JumpStartModelHeader:
         """Lower-level function to return header.
 
@@ -478,7 +478,7 @@ class JumpStartModelsCache:
                 header.
             attempt (int): attempt number at retrieving a header.
         """
-        if model_type == JumpStartModelType.OPENSOURCE:
+        if model_type == JumpStartModelType.OPEN_SOURCE:
             versioned_model_id = self._open_source_model_id_manifest_key_cache.get(
                 JumpStartVersionedModelId(model_id, semantic_version_str)
             )[0]
@@ -506,7 +506,7 @@ class JumpStartModelsCache:
         self,
         model_id: str,
         version_str: str,
-        model_type: JumpStartModelType = JumpStartModelType.OPENSOURCE
+        model_type: JumpStartModelType = JumpStartModelType.OPEN_SOURCE
     ) -> JumpStartModelSpecs:
         """Return specs for a given JumpStart model ID and semantic version.
 

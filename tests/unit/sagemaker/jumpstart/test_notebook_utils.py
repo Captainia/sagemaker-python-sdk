@@ -671,7 +671,7 @@ class ListJumpStartModels(TestCase):
 def test_get_model_url(patched_get_model_specs: Mock, patched_validate_model_id_and_get_type: Mock):
 
     patched_get_model_specs.side_effect = get_prototype_model_spec
-    patched_validate_model_id_and_get_type.return_value = JumpStartModelType.OPENSOURCE
+    patched_validate_model_id_and_get_type.return_value = JumpStartModelType.OPEN_SOURCE
 
     model_id, version = "xgboost-classification-model", "1.0.0"
     assert "https://xgboost.readthedocs.io/en/latest/" == get_model_url(model_id, version)
@@ -698,5 +698,5 @@ def test_get_model_url(patched_get_model_specs: Mock, patched_validate_model_id_
         version=version,
         region=region,
         s3_client=DEFAULT_JUMPSTART_SAGEMAKER_SESSION.s3_client,
-        model_type=JumpStartModelType.OPENSOURCE,
+        model_type=JumpStartModelType.OPEN_SOURCE,
     )

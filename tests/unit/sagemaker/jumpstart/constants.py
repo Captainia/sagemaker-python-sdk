@@ -6330,7 +6330,10 @@ BASE_PROPRIETARY_SPEC = {
     "product_id": "1bd680a0-f29b-479d-91c3-9899743021cf",
     "model_subscription_link": "https://aws.amazon.com/marketplace/ai/procurement?productId=1bd680a0",
     "hosting_notebook_key": "pmm-notebooks/pmm-notebook-ai21-jurassic-2-light.ipynb",
-    "deploy_kwargs": {"modelDataDownloadTimeout": 3600, "containerStartupHealthCheckTimeout": 600},
+    "deploy_kwargs": {
+        "model_data_download_timeout": 3600,
+        "container_startup_health_check_timeout": 600,
+    },
     "default_payloads": {
         "Shakespeare": {
             "content_type": "application/json",
@@ -6338,6 +6341,12 @@ BASE_PROPRIETARY_SPEC = {
             "output_keys": {"generated_text": "[0].completions[0].data.text"},
             "body": {"prompt": "To be, or", "maxTokens": 1, "temperature": 0},
         }
+    },
+    "predictor_specs": {
+        "supported_content_types": ["application/json"],
+        "supported_accept_types": ["application/json"],
+        "default_content_type": "application/json",
+        "default_accept_type": "application/json",
     },
     "default_inference_instance_type": "ml.p4de.24xlarge",
     "supported_inference_instance_types": ["ml.p4de.24xlarge"],
