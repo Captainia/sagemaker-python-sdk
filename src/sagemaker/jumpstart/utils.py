@@ -34,6 +34,7 @@ from sagemaker.jumpstart.exceptions import (
     DeprecatedJumpStartModelError,
     VulnerableJumpStartModelError,
     get_old_model_version_msg,
+    INVALID_MODEL_ID_ERROR_MSG,
 )
 from sagemaker.jumpstart.types import (
     JumpStartModelHeader,
@@ -743,7 +744,7 @@ def validate_model_id_and_get_type(
     model_version: Optional[str] = None,
     script: enums.JumpStartScriptScope = enums.JumpStartScriptScope.INFERENCE,
     sagemaker_session: Optional[Session] = constants.DEFAULT_JUMPSTART_SAGEMAKER_SESSION,
-) -> enums.JumpStartModelType:
+) -> Optional[enums.JumpStartModelType]:
     """Returns model type if the model ID is supported for the given script.
 
     Raises:
@@ -755,25 +756,25 @@ def validate_model_id_and_get_type(
         open_source_models: Set[str],
         proprietary_models: Set[str],
         script: enums.JumpStartScriptScope,
-    ) -> enums.JumpStartModelType:
+    ) -> Optional[enums.JumpStartModelType]:
         if model_id in open_source_models:
-            return enums.JumpStartModelType.OPENSOURCE
+            return enums.JumpStartModelType.OPEN_SOURCE
         if model_id in proprietary_models:
             if script == enums.JumpStartScriptScope.INFERENCE:
                 return enums.JumpStartModelType.PROPRIETARY
             raise ValueError(f"Unsupported script for Marketplace models: {script}")
-        return False
+        return None
 
     if model_id in {None, ""}:
-        return False
+        return None
     if not isinstance(model_id, str):
-        return False
+        return None
 
     s3_client = sagemaker_session.s3_client if sagemaker_session else None
     region = region or constants.JUMPSTART_DEFAULT_REGION_NAME
     model_version = model_version or "*"
     models_manifest_list = accessors.JumpStartModelsAccessor._get_manifest(
-        region=region, s3_client=s3_client, model_type=enums.JumpStartModelType.OPENSOURCE
+        region=region, s3_client=s3_client, model_type=enums.JumpStartModelType.OPEN_SOURCE
     )
     open_source_model_id_set = {model.model_id for model in models_manifest_list}
 

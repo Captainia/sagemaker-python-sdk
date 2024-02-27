@@ -19,6 +19,7 @@ from sagemaker.utils import get_instance_type_family, format_tags, Tags
 from sagemaker.model_metrics import ModelMetrics
 from sagemaker.metadata_properties import MetadataProperties
 from sagemaker.drift_check_baselines import DriftCheckBaselines
+from sagemaker.jumpstart.enums import JumpStartModelType
 
 from sagemaker.session import Session
 from sagemaker.workflow.entities import PipelineVariable
@@ -102,8 +103,8 @@ class JumpStartDataHolderType:
 class JumpStartS3FileType(str, Enum):
     """Type of files published in JumpStart S3 distribution buckets."""
 
-    MANIFEST = "manifest"
-    SPECS = "specs"
+    OPEN_SOURCE_MANIFEST = "manifest"
+    OPEN_SOURCE_SPECS = "specs"
     PROPRIETARY_MANIFEST = "proptietary_manifest"
     PROPRIETARY_SPECS = "proprietary_specs"
 
@@ -1030,6 +1031,7 @@ class JumpStartModelInitKwargs(JumpStartKwargs):
     __slots__ = [
         "model_id",
         "model_version",
+        "model_type",
         "instance_type",
         "tolerate_vulnerable_model",
         "tolerate_deprecated_model",
@@ -1060,6 +1062,7 @@ class JumpStartModelInitKwargs(JumpStartKwargs):
         "instance_type",
         "model_id",
         "model_version",
+        "model_type",
         "tolerate_vulnerable_model",
         "tolerate_deprecated_model",
         "region",
@@ -1071,6 +1074,7 @@ class JumpStartModelInitKwargs(JumpStartKwargs):
         self,
         model_id: str,
         model_version: Optional[str] = None,
+        model_type: Optional[JumpStartModelType] = JumpStartModelType.OPEN_SOURCE,
         region: Optional[str] = None,
         instance_type: Optional[str] = None,
         image_uri: Optional[Union[str, Any]] = None,
@@ -1100,6 +1104,7 @@ class JumpStartModelInitKwargs(JumpStartKwargs):
 
         self.model_id = model_id
         self.model_version = model_version
+        self.model_type = model_type
         self.instance_type = instance_type
         self.region = region
         self.image_uri = image_uri

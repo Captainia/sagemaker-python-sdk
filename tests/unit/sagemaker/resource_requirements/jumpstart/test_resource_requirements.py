@@ -30,7 +30,7 @@ def test_jumpstart_resource_requirements(
 ):
 
     patched_get_model_specs.side_effect = get_spec_from_base_spec
-    patched_validate_model_id_and_get_type.return_value = JumpStartModelType.OPENSOURCE
+    patched_validate_model_id_and_get_type.return_value = JumpStartModelType.OPEN_SOURCE
     region = "us-west-2"
     mock_client = boto3.client("s3")
     mock_session = Mock(s3_client=mock_client)
@@ -51,7 +51,7 @@ def test_jumpstart_resource_requirements(
         model_id=model_id,
         version=model_version,
         s3_client=mock_client,
-        model_type=JumpStartModelType.OPENSOURCE,
+        model_type=JumpStartModelType.OPEN_SOURCE,
     )
     patched_get_model_specs.reset_mock()
 
@@ -62,7 +62,7 @@ def test_jumpstart_no_supported_resource_requirements(
     patched_get_model_specs, patched_validate_model_id_and_get_type
 ):
     patched_get_model_specs.side_effect = get_special_model_spec
-    patched_validate_model_id_and_get_type.return_value = JumpStartModelType.OPENSOURCE
+    patched_validate_model_id_and_get_type.return_value = JumpStartModelType.OPEN_SOURCE
 
     model_id, model_version = "no-supported-instance-types-model", "*"
     region = "us-west-2"
@@ -83,7 +83,7 @@ def test_jumpstart_no_supported_resource_requirements(
         model_id=model_id,
         version=model_version,
         s3_client=mock_client,
-        model_type=JumpStartModelType.OPENSOURCE,
+        model_type=JumpStartModelType.OPEN_SOURCE,
     )
     patched_get_model_specs.reset_mock()
 

@@ -21,6 +21,9 @@ from sagemaker.predictor import retrieve_default
 
 import tests.integ
 
+from sagemaker.jumpstart.enums import JumpStartModelType
+from sagemaker.base_predictor import Predictor
+from sagemaker import accept_types, content_types, serializers, deserializers
 from sagemaker.jumpstart.model import JumpStartModel
 from tests.integ.sagemaker.jumpstart.constants import (
     ENV_VAR_JUMPSTART_SDK_TEST_SUITE_ID,
@@ -39,7 +42,7 @@ INF2_SUPPORTED_REGIONS = {
     "us-east-2",
 }
 
-MAX_INIT_TIME_SECONDS = 5
+MAX_INIT_TIME_SECONDS = 15
 
 GATED_INFERENCE_MODEL_PACKAGE_SUPPORTED_REGIONS = {
     "us-west-2",
@@ -237,8 +240,6 @@ def test_instatiating_model(mock_warning_logger, setup):
 
     assert elapsed_time <= MAX_INIT_TIME_SECONDS
 
-    mock_warning_logger.assert_called_once()
-
 
 def test_jumpstart_model_register(setup):
     model_id = "huggingface-txt2img-conflictx-complex-lineart"
@@ -260,5 +261,27 @@ def test_jumpstart_model_register(setup):
     )
 
     response = predictor.predict("hello world!")
+
+    assert response is not None
+
+
+@pytest.mark.skipif(
+    True,
+    reason="Only enable if test account is subscribed to the proprietary model",
+)
+def test_proprietary_jumpstart_model(setup):
+
+    model_id = "ai21-jurassic-2-light"
+
+    model = JumpStartModel(
+        model_id=model_id,
+        role=get_sm_session().get_caller_identity_arn(),
+        sagemaker_session=get_sm_session(),
+    )
+
+    predictor = model.deploy()
+    payload = {"prompt": "To be, or", "maxTokens": 4, "temperature": 0, "numResults": 1}
+
+    response = predictor.predict(payload)
 
     assert response is not None

@@ -48,7 +48,7 @@ def get_header_from_base_header(
     model_id: str = None,
     semantic_version_str: str = None,
     version: str = None,
-    model_type: JumpStartModelType = JumpStartModelType.OPENSOURCE,
+    model_type: JumpStartModelType = JumpStartModelType.OPEN_SOURCE,
 ) -> JumpStartModelHeader:
 
     if version and semantic_version_str:
@@ -104,7 +104,7 @@ def get_prototype_model_spec(
     model_id: str = None,
     version: str = None,
     s3_client: boto3.client = None,
-    model_type: JumpStartModelType = JumpStartModelType.OPENSOURCE,
+    model_type: JumpStartModelType = JumpStartModelType.OPEN_SOURCE,
 ) -> JumpStartModelSpecs:
     """This function mocks cache accessor functions. For this mock,
     we only retrieve model specs based on the model ID.
@@ -120,7 +120,7 @@ def get_special_model_spec(
     model_id: str = None,
     version: str = None,
     s3_client: boto3.client = None,
-    model_type: JumpStartModelType = JumpStartModelType.OPENSOURCE,
+    model_type: JumpStartModelType = JumpStartModelType.OPEN_SOURCE,
 ) -> JumpStartModelSpecs:
     """This function mocks cache accessor functions. For this mock,
     we only retrieve model specs based on the model ID. This is reserved
@@ -136,7 +136,7 @@ def get_special_model_spec_for_inference_component_based_endpoint(
     model_id: str = None,
     version: str = None,
     s3_client: boto3.client = None,
-    model_type: JumpStartModelType = JumpStartModelType.OPENSOURCE,
+    model_type: JumpStartModelType = JumpStartModelType.OPEN_SOURCE,
 ) -> JumpStartModelSpecs:
     """This function mocks cache accessor functions. For this mock,
     we only retrieve model specs based on the model ID and adding
@@ -160,7 +160,7 @@ def get_spec_from_base_spec(
     version_str: str = None,
     version: str = None,
     s3_client: boto3.client = None,
-    model_type: JumpStartModelType = JumpStartModelType.OPENSOURCE,
+    model_type: JumpStartModelType = JumpStartModelType.OPEN_SOURCE,
 ) -> JumpStartModelSpecs:
 
     if version and version_str:
@@ -208,13 +208,13 @@ def patched_retrieval_function(
 ) -> JumpStartCachedS3ContentValue:
 
     filetype, s3_key = key.file_type, key.s3_key
-    if filetype == JumpStartS3FileType.MANIFEST:
+    if filetype == JumpStartS3FileType.OPEN_SOURCE_MANIFEST:
 
         return JumpStartCachedS3ContentValue(
             formatted_content=get_formatted_manifest(BASE_MANIFEST)
         )
 
-    if filetype == JumpStartS3FileType.SPECS:
+    if filetype == JumpStartS3FileType.OPEN_SOURCE_SPECS:
         _, model_id, specs_version = s3_key.split("/")
         version = specs_version.replace("specs_v", "").replace(".json", "")
         return JumpStartCachedS3ContentValue(

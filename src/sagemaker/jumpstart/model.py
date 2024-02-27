@@ -290,6 +290,7 @@ class JumpStartModel(Model):
         model_init_kwargs = get_init_kwargs(
             model_id=model_id,
             model_from_estimator=False,
+            model_type=self._model_type,
             model_version=model_version,
             instance_type=instance_type,
             tolerate_vulnerable_model=tolerate_vulnerable_model,
@@ -604,6 +605,7 @@ class JumpStartModel(Model):
                 tolerate_deprecated_model=self.tolerate_deprecated_model,
                 tolerate_vulnerable_model=self.tolerate_vulnerable_model,
                 sagemaker_session=self.sagemaker_session,
+                model_type=self._model_type,
             )
 
         # If a predictor class was passed, do not mutate predictor
