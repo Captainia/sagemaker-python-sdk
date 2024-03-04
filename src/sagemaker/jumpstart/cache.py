@@ -154,7 +154,7 @@ class JumpStartModelsCache:
         key: str,
         file_type: JumpStartS3FileType = JumpStartS3FileType.OPEN_SOURCE_MANIFEST,
     ) -> None:
-        """Set manifest file s3 key. Clears cache after new key is set.
+        """Set manifest file s3 key, clear cache after new key is set.
 
         Raises:
             ValueError: if the file type is not recognized
@@ -213,8 +213,6 @@ class JumpStartModelsCache:
             key (JumpStartVersionedModelId): Key for which to fetch versioned model ID.
             value (Optional[JumpStartVersionedModelId]): Unused variable for current value of
                 old cached model ID/version.
-            UseSematicVersion (bool): boolean value to indicate whether the model versions follow
-                sematic versioning.
 
         Raises:
             KeyError: If the semantic version is not found in the manifest, or is found but
@@ -299,7 +297,7 @@ class JumpStartModelsCache:
         key: JumpStartVersionedModelId,
         value: Optional[JumpStartVersionedModelId],  # pylint: disable=W0613
     ) -> JumpStartVersionedModelId:
-        """Get open source manifest key from model id."""
+        """Retrieve model manifest key for open source model, by filtering supported versions."""
         return self._model_id_retrieval_function(
             key, value, model_type=JumpStartModelType.OPEN_SOURCE
         )
@@ -309,7 +307,7 @@ class JumpStartModelsCache:
         key: JumpStartVersionedModelId,
         value: Optional[JumpStartVersionedModelId],  # pylint: disable=W0613
     ) -> JumpStartVersionedModelId:
-        """Get proprietary manifest key from model id."""
+        """Retrieve model manifest key for proprietary model, by filtering supported versions."""
         return self._model_id_retrieval_function(
             key, value, model_type=JumpStartModelType.PROPRIETARY
         )
@@ -445,7 +443,7 @@ class JumpStartModelsCache:
         self,
         model_id: str,
         semantic_version_str: str,
-        available_versions: List[Version],
+        available_versions: List[str],
         model_type: JumpStartModelType = JumpStartModelType.OPEN_SOURCE,
     ) -> Optional[str]:
         """Perform semantic version search on available versions.
