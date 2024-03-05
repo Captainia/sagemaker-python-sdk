@@ -6093,6 +6093,7 @@ BASE_SPEC = {
     "deprecated_message": None,
     "hosting_model_package_arns": None,
     "hosting_eula_key": None,
+    "model_subscription_link": None,
     "hyperparameters": [
         {
             "name": "epochs",
