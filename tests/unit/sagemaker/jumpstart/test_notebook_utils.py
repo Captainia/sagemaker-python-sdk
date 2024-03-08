@@ -419,7 +419,7 @@ class ListJumpStartModels(TestCase):
         patched_get_manifest.assert_called_with(
             region="some-region",
             s3_client=DEFAULT_JUMPSTART_SAGEMAKER_SESSION.s3_client,
-            model_type=JumpStartModelType.OPEN_SOURCE,
+            model_type=JumpStartModelType.OPEN_WEIGHT,
         )
 
     @patch("sagemaker.jumpstart.accessors.JumpStartModelsAccessor._get_manifest")
@@ -623,7 +623,7 @@ class ListJumpStartModels(TestCase):
             "lighton-mini-instruct40b",
         ]
 
-        all_open_source_model_ids = [
+        all_open_weight_model_ids = [
             "catboost-classification-model",
             "huggingface-spc-bert-base-cased",
             "lightgbm-classification-model",
@@ -634,10 +634,11 @@ class ListJumpStartModels(TestCase):
             "xgboost-classification-model",
         ]
 
-        assert list_jumpstart_models(marketplace_model=True) == all_prop_model_ids
+        assert list_jumpstart_models("model_type == proprietary") == all_prop_model_ids
+        assert list_jumpstart_models("model_type == open_weight") == all_open_weight_model_ids
 
         assert list_jumpstart_models(list_versions=False) == sorted(
-            all_prop_model_ids + all_open_source_model_ids
+            all_prop_model_ids + all_open_weight_model_ids
         )
 
     @patch("sagemaker.jumpstart.accessors.JumpStartModelsAccessor._get_manifest")
@@ -713,7 +714,7 @@ def test_get_model_url(
 ):
 
     patched_get_model_specs.side_effect = get_prototype_model_spec
-    patched_validate_model_id_and_get_type.return_value = JumpStartModelType.OPEN_SOURCE
+    patched_validate_model_id_and_get_type.return_value = JumpStartModelType.OPEN_WEIGHT
     patched_get_manifest.side_effect = lambda region, *args, **kwargs: get_prototype_manifest(
         region
     )
@@ -742,5 +743,5 @@ def test_get_model_url(
         version=version,
         region="us-west-2",
         s3_client=DEFAULT_JUMPSTART_SAGEMAKER_SESSION.s3_client,
-        model_type=JumpStartModelType.OPEN_SOURCE,
+        model_type=JumpStartModelType.OPEN_WEIGHT,
     )
